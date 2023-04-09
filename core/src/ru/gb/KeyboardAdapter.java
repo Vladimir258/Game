@@ -16,19 +16,35 @@ public class KeyboardAdapter extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.A) leftPressed = true;
-        if (keycode == Input.Keys.D) rightPressed = true;
-        if (keycode == Input.Keys.W) upPressed = true;
-        if (keycode == Input.Keys.S) downPressed = true;
+        if (keycode == Input.Keys.A) {
+            leftPressed = true;
+        }
+        if (keycode == Input.Keys.D) {
+            rightPressed = true;
+        }
+        if (keycode == Input.Keys.W) {
+            upPressed = true;
+        }
+        if (keycode == Input.Keys.S) {
+            downPressed = true;
+        }
         return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.A) leftPressed = false;
-        if (keycode == Input.Keys.D) rightPressed = false;
-        if (keycode == Input.Keys.W) upPressed = false;
-        if (keycode == Input.Keys.S) downPressed = false;
+        if (keycode == Input.Keys.A) {
+            leftPressed = false;
+        }
+        if (keycode == Input.Keys.D) {
+            rightPressed = false;
+        }
+        if (keycode == Input.Keys.W) {
+            upPressed = false;
+        }
+        if (keycode == Input.Keys.S) {
+            downPressed = false;
+        }
         return false;
     }
 
@@ -41,10 +57,18 @@ public class KeyboardAdapter extends InputAdapter {
     public Vector2 getDirection() {
         direction.set(0,0);
 
-        if(leftPressed) direction.add(-3,0);
-        if(rightPressed) direction.add(3,0);
-        if(upPressed) direction.add(0,3);
-        if(downPressed) direction.add(0,-3);
+        if(leftPressed) {
+            direction.add(-3,0);
+        }
+        if(rightPressed) {
+            direction.add(3,0);
+        }
+        if(upPressed) {
+            direction.add(0,3);
+        }
+        if(downPressed) {
+            direction.add(0,-3);
+        }
         return direction;
     }
 
