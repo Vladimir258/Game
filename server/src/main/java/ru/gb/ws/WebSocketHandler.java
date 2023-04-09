@@ -5,6 +5,9 @@ import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import com.badlogic.gdx.utils.Array;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 @Component
 public class WebSocketHandler extends AbstractWebSocketHandler {
     private Array<WebSocketSession> sessions = new Array<>();
@@ -12,7 +15,7 @@ public class WebSocketHandler extends AbstractWebSocketHandler {
     private DisconnectListener disconnectListener;
     private MessageListener messageListener;
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    public synchronized void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
         connectListener.handler(session);
     }
