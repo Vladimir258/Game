@@ -1,4 +1,4 @@
-package ru.gb.game;
+package ru.gb;
 
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import ru.gb.game.helpers.ObjectPool;
-import ru.gb.game.helpers.Poolable;
+import ru.gb.helpers.*;
 
 public class ParticleController extends ObjectPool<ParticleController.Particle> {
+
     class Particle implements Poolable {
         private Vector2 position;
         private Vector2 velocity;
@@ -144,9 +144,9 @@ public class ParticleController extends ObjectPool<ParticleController.Particle> 
             float t = o.getTime() / o.getTimeMax();
             float scale =  lerp(o.getSize1(), o.getSize2(), t);
             batch.setColor(lerp(o.getR1(), o.getR2(), t),
-                    lerp(o.getG1(), o.getG2(), t),
-                    lerp(o.getB1(), o.getB2(), t),
-                    lerp(o.getA1(), o.getA2(), t));
+                           lerp(o.getG1(), o.getG2(), t),
+                           lerp(o.getB1(), o.getB2(), t),
+                           lerp(o.getA1(), o.getA2(), t));
             batch.draw(oneParticle, o.getPosition().x - 8, o.getPosition().y - 8,
                     8, 8, 16, 16, scale, scale, 0);
         }

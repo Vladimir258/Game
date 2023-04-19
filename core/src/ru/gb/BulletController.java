@@ -1,4 +1,4 @@
-package ru.gb.game;
+package ru.gb;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import ru.gb.game.helpers.ObjectPool;
-import ru.gb.game.helpers.Poolable;
+import ru.gb.helpers.*;
 
 public class BulletController extends ObjectPool<BulletController.Bullet> {
 
@@ -26,7 +25,7 @@ public class BulletController extends ObjectPool<BulletController.Bullet> {
 
         @Override
         public boolean isActive() {
-            return false;
+            return active;
         }
 
         public Bullet() {
@@ -67,7 +66,6 @@ public class BulletController extends ObjectPool<BulletController.Bullet> {
 
     private ParticleController pc;
     private TextureRegion bulletTexture;
-
 
     @Override
     protected Bullet newObject() {

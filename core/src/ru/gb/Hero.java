@@ -1,4 +1,4 @@
-package ru.gb.game;
+package ru.gb;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -12,12 +12,22 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.StringBuilder;
 
-
 public class Hero {
+
+    public enum Skill {
+        // TODO Здесь добавлять вещи для магазина
+        HP_MAX(20), HP(20), WEAPON(100);
+        int cost;
+        Skill(int cost) {
+            this.cost = cost;
+        }
+    }
+
+    private boolean pause = false;
 
     private TextureRegion texture;
     private Vector2 position;
-    private Vector2 velocity;
+    private Vector2 velocity; // вектор скорости
     private float angle;
     private float enginePower;
     public float fireTimer;
@@ -31,13 +41,33 @@ public class Hero {
     private StringBuilder sbGameOver;
     private StringBuilder sbAmmo;
     private StringBuilder sbMoney;
+
     private Weapon weapon;
+    private BulletController bc;
     private ParticleController pc;
+
     private int halfX;
     private int halfY;
-    private int money;
+
+    private int money; // Сколько баллов набрали
+
+
+    private int weaponNum;
+
     private final float BASE_SIZE = 64;
     private final float BASE_RADIUS = BASE_SIZE / 2;
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
+    }
+
+    //public Shop getShop() {        return shop;    }
+
+   // public GamePause getGamePause() {        return gamePause;    }
 
     public int getHp() {
         return hp;
@@ -59,12 +89,12 @@ public class Hero {
         return hpMax;
     }
 
-    public void addScore(int amount) {
-        this.score += amount;
-    }
-
     public float getAngle() {
         return angle;
+    }
+
+    public void addScore(int amount) {
+        this.score += amount;
     }
 
     public Vector2 getPosition() {
@@ -75,18 +105,39 @@ public class Hero {
         return velocity;
     }
 
+    public boolean isAlive() {
+        return hp > 0;
+    }
+
+    // Достаточно ли денег для покупки
+    public boolean isMoneyEnough(int amount) {
+        return money >= amount;
+    }
+
+    // Вычитание денег за покупку
+    public void decreaseMoney(int amount) {
+        money -= amount;
+    }
+
     public Hero(ParticleController pc) {
+ //       this.pause = false;
+
         this.texture = new TextureRegion(new Texture("ship.png"));
         this.position = new Vector2(100, 100);
         this.velocity = new Vector2(0, 0);
         this.angle = 0.0f;
         this.enginePower = 500.0f;
-        this.pc = pc;
+
         this.hitArea = new Circle();
         this.hitArea.setPosition(position);
         this.hitArea.setRadius(BASE_RADIUS);
-        this.hpMax = 100;
+        this.pc = pc;
+
+
+        this.hpMax = 100; // Чтоб при разбиении астероидов у следующих жизнь была меньше
         this.hp = hpMax;
+//        this.shop = new Shop(this);
+//        this.gamePause = new GamePause(this);
         this.sbScore = new StringBuilder();
         this.sbHP = new StringBuilder();
         this.sbGameOver = new StringBuilder();
@@ -103,9 +154,9 @@ public class Hero {
         return weapon;
     }
 
-    public boolean comeToHero(BonusController.Bonus bb) {
+        public boolean comeToHero(BonusController.Bonus bb) {
         if(this.position.dst(bb.getPosition()) < 60) {
-            return true;
+           return true;
         }
         return false;
     }
@@ -122,6 +173,8 @@ public class Hero {
 
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x - 32, position.y - 32, 32, 32, 64, 64, 1, 1, angle);
+
+
         pc.render(batch);
     }
 
@@ -149,8 +202,35 @@ public class Hero {
         }
     }
 
+//    public boolean upgrade(Skill skill) {
+//        switch (skill) {
+//            case HP_MAX:
+//                hpMax += 10;
+//                return false;
+//            case HP:
+//                hp += 20;
+//                return false;
+//            case WEAPON:
+////                if(weaponNum < weapons.length -1) {
+////                    weaponNum++;
+////                    currentWeapon = weapons[weaponNum];
+////                    return true;
+////                }
+//                return false;
+//            default:
+//                return false;
+//        }
+//    }
+
     public void update(float dt) {
+        if(hp > 100) {
+            hp = 100;
+        }
         pc.update(dt);
+
+
+        this.hitArea.setPosition(position);
+        updateScore(dt);
         checkSpaceBorders();
         controlShip(dt);
 
@@ -181,6 +261,7 @@ public class Hero {
                 );
             }
         }
+
     }
 
     public void updateScore(float dt) {
@@ -221,9 +302,21 @@ public class Hero {
 
             if(fireTimer > 0.2f) {
                 fireTimer = 0.0f;
-                weapon.fire();
+               weapon.fire();
             }
         }
+        // Открытие магазина
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.U)) {
+//            shop.setVisible(true);
+//            pause = true;
+//        }
+
+        // Меню паузы
+//        if(Gdx.input.isKeyJustPressed(Input.Keys.J)) {
+//            gamePause.setVisible(true);
+//            pause = true;
+//        }
+
         if(Gdx.input.isKeyPressed(Input.Keys.A)) {
             angle += 180.0f * dt;
         }
@@ -261,11 +354,31 @@ public class Hero {
     }
 
     private void createWeapons() {
-        weapon = new Weapon(
-                this, "Energy", 0.2f, 4,
+        weapon =
+//                new Weapon(
+//                         this, "Plasma", 0.2f, 1,
+//                        600, 100,
+//                        new Vector3[]{
+//                                new Vector3(28, 0, 0),
+//                                new Vector3(28, 70, 10),
+//                                new Vector3(28, -70, -10)
+//                        });
+                new Weapon(
+                         this, "Energy", 0.2f, 4,
                         2000, 1000,
                         new Vector3[]{
+                                // new Vector3(0, 0, 0),
+                                //  new Vector3(0, 0, 0),
                                 new Vector3(28, 0, 0)
                         });
+
     }
 }
+
+//    add() - Сложение двух векторов
+//    sub() - Вычитание векторов
+//    scl() - Умножение вектора на скаляр
+//    len() - Получение длины вектора
+//    nor() - Нормирование вектора
+//    cpy() - Копирование вектора
+//    dot() - Скалярное произведение
