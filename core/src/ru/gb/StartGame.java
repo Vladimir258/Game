@@ -2,10 +2,8 @@ package ru.gb;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.*;
 
 public class StartGame extends ApplicationAdapter {
 	SpriteBatch batch;
@@ -19,7 +17,7 @@ public class StartGame extends ApplicationAdapter {
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
-		bg = new Background();
+		bg = new Background(hero);
 		pc = new ParticleController();
 		hero = new Hero(pc);
 		font = new BitmapFont();
@@ -74,20 +72,15 @@ public class StartGame extends ApplicationAdapter {
 	}
 
 	public void checkCollisions() {
-		// Столкновение корабля с бонусом
 		for (int i = 0; i < bc.getActiveList().size(); i++) {
 			BonusController.Bonus a = bc.getActiveList().get(i);
-			// TODO непойму почему hero переодически скачет от бобнуса к бонусу, получилось забавно
-			// TODO но где-то ошибка, может метод dst() заменить в comeToHero. Подумаю
 			if(hero.comeToHero(a)) {
-				// a.setPosition(hero.getPosition());
-				// Слежение за мышкой делается подобно
 				Vector2 tmpVec = new Vector2().set(hero.getPosition()).sub(a.getPosition()).nor();
 				a.getVelocity().mulAdd(tmpVec, 200.0f);
 			};
 
-			if(a.getHitArea().contains(hero.getPosition())) { // При столкновении с астероидом
-				hero.useBonus(a.getSize(),a.getType()); // При столкновении с бонусом кораблю перепадают бонусы)))
+			if(a.getHitArea().contains(hero.getPosition())) {
+				hero.useBonus(a.getSize(),a.getType());
 
 				for (int j = 0; j < 16; j++) {
 					float angle = 6.28f / 16.0f * j;
@@ -101,12 +94,11 @@ public class StartGame extends ApplicationAdapter {
 							1.0f, 1.0f, 1.0f, 0.5f
 					);
 				}
-				a.deactivate(); //
+				a.deactivate();
 				break;
 			}
 		}
 
-		// Столкновение астероида с пулей
 		for (int i = 0; i < hero.getWeapon().getBc().getActiveList().size(); i++) {
 			BulletController.Bullet b = hero.getWeapon().getBc().getActiveList().get(i);
 			for (int j = 0; j < ec.getActiveList().size(); j++) {
@@ -127,21 +119,20 @@ public class StartGame extends ApplicationAdapter {
 					if(a.takeDamage(1)) {
 						hero.addScore(a.getHpMax() * 100);
 					}
-					break; // Выходим чтоб не сбить еще астероиды
+					break;
 				}
 			}
 		}
-		// Столкновение корабля с астероидом
-		for (int i = 0; i < ec.getActiveList().size(); i++) {  // Урон для коробля
+
+		for (int i = 0; i < ec.getActiveList().size(); i++) {
 			EnemyController.Asteroid a = ec.getActiveList().get(i);
-			if(a.getHitArea().contains(hero.getPosition())) { // При столкновении с астероидом
-				hero.takeDamage( 2 + a.getHpMax()); // корабль получает урон равный жизньАстероида
-				hero.push(a.getVelocity()); // при столкновении с астероидом нас отбрасывает на силу равную ускорению астероида
-				a.takeDamage(a.getHpMax()); // астероид уничтожается
+			if(a.getHitArea().contains(hero.getPosition())) {
+				hero.takeDamage( 2 + a.getHpMax());
+				hero.push(a.getVelocity());
+				a.takeDamage(a.getHpMax());
 				break;
 			}
 		}
 	}
-
 }
 

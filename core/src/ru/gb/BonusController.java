@@ -2,33 +2,23 @@ package ru.gb;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.*;
 import ru.gb.helpers.*;
 public class BonusController extends ObjectPool<BonusController.Bonus> {
 
     class Bonus implements Poolable {
         private TextureRegion texture;
-
         private Vector2 position;
         private Vector2 velocity;
-
         private int size;
         private int type;
-
-        private float angle; // Угол показа изображения
-        private float rotationSpeed; // Скорость вращения
-        private float scale; // Масштаб
+        private float angle;
+        private float rotationSpeed;
+        private float scale;
         private boolean active;
         private Circle hitArea;
-        //private GameController gc;
-
-
         private final float BASE_SIZE = 32;
-       // private final float BASE_RADIUS = BASE_SIZE / 2;
 
         public Circle getHitArea() {
             return hitArea;
@@ -52,13 +42,10 @@ public class BonusController extends ObjectPool<BonusController.Bonus> {
         }
 
         public Bonus() {
-        //    public Bonus(GameController gc) {
-          //  this.gc = gc;
             this.position = new Vector2(0,0);
             this.velocity = new Vector2(0,0);
             this.hitArea = new Circle();
             active = false;
-
         }
 
 
@@ -87,7 +74,6 @@ public class BonusController extends ObjectPool<BonusController.Bonus> {
             setSizeAndType(size, type);
         }
 
-        // Движение
         public void update(float dt) {
             position.mulAdd(velocity, dt);
             angle += rotationSpeed * dt;
@@ -135,26 +121,16 @@ public class BonusController extends ObjectPool<BonusController.Bonus> {
         }
     }
 
-
-
-   // private GameController gc;
-
     @Override
     protected Bonus newObject() {
-      //  return new Bonus(this.gc);
         return new Bonus();
     }
 
-//    public BonusController(GameController gc) {
-//        this.gc = gc;
-//    }
 
     public BonusController() {
-
     }
 
     public void render(SpriteBatch batch) {
-        // Отрисовываем астероиды
         for (int i = 0; i < activeList.size(); i ++) {
             Bonus b = activeList.get(i);
             b.render(batch);
@@ -163,7 +139,7 @@ public class BonusController extends ObjectPool<BonusController.Bonus> {
 
     public void setup(float x, float y, float vx, float vy, float scale, int size, int type) {
         //TODO Исправить
-        if(type < 6) { // Пока такая проверка
+        if(type < 6) {
             getActiveElement().activate(x, y, vx, vy, scale, size, type);
         }
     }

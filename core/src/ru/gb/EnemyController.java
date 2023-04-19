@@ -2,11 +2,8 @@ package ru.gb;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.*;
 import ru.gb.helpers.*;
 
 public class EnemyController extends ObjectPool<EnemyController.Asteroid> {
@@ -22,9 +19,9 @@ public class EnemyController extends ObjectPool<EnemyController.Asteroid> {
         private Vector2 velocity;
         private int hp;
         private int hpMax;
-        private float angle; // Угол показа изображения
-        private float rotationSpeed; // Скорость вращения
-        private float scale; // Масштаб
+        private float angle;
+        private float rotationSpeed;
+        private float scale;
         private boolean active;
         private Circle hitArea;
 
@@ -54,8 +51,6 @@ public class EnemyController extends ObjectPool<EnemyController.Asteroid> {
         }
 
         public Asteroid(EnemyController ec) {
-            //public Asteroid(GameController gc) {
-         //   this.gc = gc;
             this.ec = ec;
             this.position = new Vector2(0,0);
             this.velocity = new Vector2(0,0);
@@ -75,13 +70,11 @@ public class EnemyController extends ObjectPool<EnemyController.Asteroid> {
         public void activate(float x, float y, float vx, float vy, float scale) {
             this.position.set(x,y);
             this.velocity.set(vx,vy);
-         //   this.hpMax = (int) ((5 + gc.getLevel() * 2)* scale); // Чтоб при разбиении астероидов у следующих жизнь была меньше
             this.hpMax = (int) ((5 * 2)* scale);
             this.hp = hpMax;
             this.angle = MathUtils.random(0.0f,360.0f);
             this.rotationSpeed = MathUtils.random(-180.0f,180.0f);
             this.hitArea.setPosition(position);
-
             this.scale = scale;
             this.active = true;
             this.hitArea.setRadius(BASE_RADIUS * scale * 0.9f);
@@ -97,17 +90,16 @@ public class EnemyController extends ObjectPool<EnemyController.Asteroid> {
                                 MathUtils.random(-200, 200), MathUtils.random(-200, 200), scale - 0.2f);
                     }
                 }
-                int bonusSize = this.hpMax * 2;         // Вычисляем максимальный бонус
-                int bonusType = MathUtils.random(0,9);  // Вычисляем шанс выпадения
+                int bonusSize = this.hpMax * 2;
+                int bonusType = MathUtils.random(0,9);
                 bc.setup(position.x, position.y,
-                        50, 50, 1.0f, bonusSize, bonusType); // Создаем бонус
+                        50, 50, 1.0f, bonusSize, bonusType);
                 return true;
             } else {
                 return false;
             }
         }
 
-        // Движение
         public void update(float dt) {
             position.mulAdd(velocity, dt);
             angle += rotationSpeed * dt;
@@ -135,7 +127,6 @@ public class EnemyController extends ObjectPool<EnemyController.Asteroid> {
 
 
     public void render(SpriteBatch batch) {
-        // Отрисовываем астероиды
         for (int i = 0; i < activeList.size(); i ++) {
             Asteroid a = activeList.get(i);
             a.render(batch);

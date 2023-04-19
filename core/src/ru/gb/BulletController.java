@@ -2,10 +2,8 @@ package ru.gb;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.math.*;
 import ru.gb.helpers.*;
 
 public class BulletController extends ObjectPool<BulletController.Bullet> {
@@ -83,7 +81,7 @@ public class BulletController extends ObjectPool<BulletController.Bullet> {
             batch.draw(bulletTexture, b.getPosition().x - 16, b.getPosition().y - 16);
         }
     }
-    // Активация пули
+
     public void setup(float x, float y, float vx, float vy) {
         getActiveElement().activate(x, y, vx, vy);
     }
