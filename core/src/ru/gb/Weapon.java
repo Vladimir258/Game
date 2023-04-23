@@ -29,6 +29,14 @@ public class Weapon {
         curBullets += bullet;
     }
 
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
     public Weapon(Hero hero, String title,
                   float firePeriod, int damage, float bulletSpeed,
                   int maxBullets, Vector3[] slots) {

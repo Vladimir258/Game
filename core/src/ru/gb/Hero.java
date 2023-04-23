@@ -23,11 +23,14 @@ public class Hero {
     private Circle hitArea;
     private StringBuilder sbScore;
     private StringBuilder sbHP;
-    private StringBuilder sbGameOver;
+    private StringBuilder sbGameStatus;
     private StringBuilder sbAmmo;
     private StringBuilder sbMoney;
+    private StringBuilder sbGameOver;
     private Weapon weapon;
     private ParticleController pc;
+
+    private StartGame sg;
     private int halfX;
     private int halfY;
     private int money;
@@ -46,7 +49,16 @@ public class Hero {
         return velocity;
     }
 
-    public Hero(ParticleController pc) {
+    public StringBuilder getSbGameStatus() {
+        return sbGameStatus;
+    }
+
+    public void setSbGameStatus(StringBuilder sbGameStatus) {
+        this.sbGameStatus = sbGameStatus;
+    }
+
+    public Hero(ParticleController pc, StartGame sg) {
+        this.sg = sg;
         this.texture = new TextureRegion(new Texture("ship.png"));
         this.position = new Vector2(100, 100);
         this.velocity = new Vector2(0, 0);
@@ -60,6 +72,7 @@ public class Hero {
         this.hp = hpMax;
         this.sbScore = new StringBuilder();
         this.sbHP = new StringBuilder();
+        this.sbGameStatus = new StringBuilder();
         this.sbGameOver = new StringBuilder();
         this.sbAmmo = new StringBuilder();
         this.sbMoney = new StringBuilder();
@@ -100,9 +113,10 @@ public class Hero {
     public void renderGUI(SpriteBatch batch, BitmapFont font) {
         sbScore.clear();
         sbHP.clear();
-        sbGameOver.clear();
+        sbGameStatus.clear();
         sbAmmo.clear();
         sbMoney.clear();
+        sbGameOver.clear();
         sbScore.append("SCORE: ").append(scoreView);
         font.draw(batch, sbScore, 10, 180);
         sbHP.append("HP: ").append(hp).append(" / ").append(hpMax);
@@ -111,6 +125,10 @@ public class Hero {
         font.draw(batch, sbAmmo, 10, 140);
         sbMoney.append("Money: ").append(money);
         font.draw(batch, sbMoney, 10,  120);
+
+        sbGameStatus.append("Level: ").append(sg.getLevel());
+        font.draw(batch, sbGameStatus, Gdx.graphics.getWidth() - 100,  Gdx.graphics.getHeight() - 100);
+
         halfX = Gdx.graphics.getWidth() / 2;
         halfY = Gdx.graphics.getHeight() / 2;
 

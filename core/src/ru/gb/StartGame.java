@@ -14,16 +14,22 @@ public class StartGame extends ApplicationAdapter {
 	EnemyController ec;
 	BonusController bc;
 
+	int level = 1;
+
+	public int getLevel() {
+		return level;
+	}
+
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		bg = new Background(hero);
 		pc = new ParticleController();
-		hero = new Hero(pc);
+		hero = new Hero(pc, this);
 		font = new BitmapFont();
 		bc = new BonusController();
 		ec = new EnemyController(bc);
-		generateBigAsteroids(3);
+		generateBigAsteroids(1);
 	}
 
 	@Override
@@ -55,6 +61,11 @@ public class StartGame extends ApplicationAdapter {
 		batch.end();
 
 		checkCollisions();
+
+		if (ec.getActiveList().isEmpty()) {
+			generateBigAsteroids(++level);
+			hero.getWeapon().setDamage(hero.getWeapon().getDamage() + level);
+		}
 	}
 
 	@Override
