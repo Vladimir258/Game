@@ -49,6 +49,10 @@ public class Hero {
         return velocity;
     }
 
+    public int getScore() {
+        return score;
+    }
+
     public StringBuilder getSbGameStatus() {
         return sbGameStatus;
     }
